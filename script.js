@@ -23,3 +23,10 @@ const Gameboard = (function() {
     }
 })();
 
+// Player Factory
+const Player = (name, marker) => {
+    return {
+        name,
+        marker
+    };
+};
