@@ -102,3 +102,54 @@ const GameController = (function() {
         handleClick
     };
 })();
+
+// DisplayController
+const DisplayController = (function() {
+    const cellElements = document.querySelectorAll('.board-cell');
+    const boardElement = document.querySelector('#board');
+    const winningMessageElement = document.querySelector('.winning-message');
+    const winningMessageTextElement = document.querySelector('.winning-message-text');
+    const restartButton = document.querySelector('#restartBtn');
+
+    const updateBoard = () => {
+        const board = Gameboard.board();
+        cellElements.forEach((cell, index) => {
+            cell.classList.remove('x');
+            cell.classList.remove('o');
+            if (board[index]) {
+                cell.classList.add(board[index]);
+            }
+        });
+    };
+
+    const statusMessage = (message) => {
+        const statusElement = document.querySelector('#status');
+        statusElement.textContent = message;
+    };
+
+    const endGame = (message) => {
+        winningMessageTextElement.textContent = message;
+        winningMessageElement.classList.add('show');
+    };
+
+    const addClickListeners = () => {
+        cellElements.forEach((cell, index) => {
+            cell.addEventListener('click', () => GameController.handleClick(index), {once: true});
+        });
+
+        restartButton.addEventListener('click', () => {
+            winningMessageElement.classList.remove('show');
+            GameController.startGame();
+        });
+    };
+
+    return {
+        updateBoard,
+        setStatusMessage,
+        endGame,
+        addClickListeners
+    }
+})();
+
+GameController.startGame();
+DisplayController.addClickListeners();
