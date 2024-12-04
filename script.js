@@ -3,7 +3,7 @@ const Gameboard = (function() {
     const board = Array(9).fill('');
     const getBoard = () => board;
 
-    const setMove = (indexedDB, mark) => {
+    const setMove = (index, mark) => {
         if (board[index] === '') {
             board[index] = mark;
             return true;
@@ -12,7 +12,7 @@ const Gameboard = (function() {
     };
     const resetBoard = () => {
         for(let i=0; i< board.length; i++) {
-            board[i] = ';'
+            board[i] = ''
         }
     };
 
@@ -32,13 +32,14 @@ const Player = (name, marker) => {
 };
 // Game Controller
 const GameController = (function() {
-    const X_CLASS = 'x';
-    const CIRCLE_CLASS = 'o';
     const cellElements = document.querySelectorAll(".board-cell");
     const winPatterns = [
         [0, 1, 2],
         [3, 4, 5],
         [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
         [0, 4, 8],
         [2, 4, 6]
     ];
@@ -46,12 +47,15 @@ const GameController = (function() {
     let playerX, playerO, currentPlayer;
 
     const startGame = () => {
-        playerX = Player('Player 1', 'x');
-        playerO = Player('Player 2', 'O');
+        const player1Name = document.querySelector('#player1-name').value || 'Player 1';
+        const player2Name = document.querySelector('#player2-name').value || 'Player 2';
+        playerX = Player(player1Name, 'x');
+        playerO = Player(player2Name, 'o');
         currentPlayer = playerX;
         Gameboard.resetBoard();
         DisplayController.updateBoard();
         DisplayController.setStatusMessage(`${currentPlayer.name}'s turn`);
+        cellElements.forEach(cell => cell.classList.remove('x', 'o'));
         setBoardHoverClass();
     };
 
@@ -106,13 +110,13 @@ const GameController = (function() {
 // DisplayController
 const DisplayController = (function() {
     const cellElements = document.querySelectorAll('.board-cell');
-    const boardElement = document.querySelector('#board');
     const winningMessageElement = document.querySelector('.winning-message');
     const winningMessageTextElement = document.querySelector('.winning-message-text');
     const restartButton = document.querySelector('#restartBtn');
+    const startButton = document.querySelector('#start-button');
 
     const updateBoard = () => {
-        const board = Gameboard.board();
+        const board = Gameboard.getBoard();
         cellElements.forEach((cell, index) => {
             cell.classList.remove('x');
             cell.classList.remove('o');
@@ -122,7 +126,7 @@ const DisplayController = (function() {
         });
     };
 
-    const statusMessage = (message) => {
+    const setStatusMessage = (message) => {
         const statusElement = document.querySelector('#status');
         statusElement.textContent = message;
     };
@@ -134,13 +138,24 @@ const DisplayController = (function() {
 
     const addClickListeners = () => {
         cellElements.forEach((cell, index) => {
-            cell.addEventListener('click', () => GameController.handleClick(index), {once: true});
+            cell.addEventListener('click', () => {
+                if (!cell.classList.contains('x') && !cell.classList.contains('o')) {
+                    GameController.handleClick(index);
+                }
+            });
         });
-
+    
         restartButton.addEventListener('click', () => {
             winningMessageElement.classList.remove('show');
             GameController.startGame();
         });
+
+        startButton.addEventListener('click', () => {
+            winningMessageElement.classList.remove('show');
+            const player1Name = document.querySelector('#player1-Name').value;
+            const player2Name = document.querySelector('player2-Name').value;
+            GameController.startGame(player1Name, player2Name);
+        })
     };
 
     return {

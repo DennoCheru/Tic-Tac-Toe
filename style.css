@@ -9,11 +9,17 @@
 }
 body {
     margin: 0;
+    text-align: center;
+}
+
+.players {
+    margin: 20px;
+    border-radius: 5px;
 }
 
 .board {
     width: 100vw;
-    height: 100vh;
+    height: 70vh;
     display: grid;
     justify-content: center;
     align-content: center;
@@ -36,6 +42,10 @@ body {
 .board-cell.x,
 .board-cell.o {
     cursor: not-allowed;
+}
+ 
+.board-cell:not(.x):not(.o):active {
+    background-color: lightgrey;
 }
 
 .board-cell:first-child,
@@ -148,4 +158,10 @@ body {
 
 .winning-message.show {
     display: flex;
+}
+
+#status {
+    margin-top: 5px;
+    font-size: 1.5rem;
+    text-align: center;
 }
