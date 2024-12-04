@@ -152,8 +152,8 @@ const DisplayController = (function() {
 
         startButton.addEventListener('click', () => {
             winningMessageElement.classList.remove('show');
-            const player1Name = document.querySelector('#player1-Name').value;
-            const player2Name = document.querySelector('player2-Name').value;
+            const player1Name = document.querySelector('#player1-name').value;
+            const player2Name = document.querySelector('#player2-name').value;
             GameController.startGame(player1Name, player2Name);
         })
     };
